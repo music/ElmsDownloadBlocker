@@ -1,6 +1,12 @@
-let iconStatus = 1;
-let SUBMISSION_LENGTH = 12;  // number of characters in the word "submissions/"
-let USER_NO_LENGTH = 7;  // length of the user number identifier
+const SUBMISSION_LENGTH = 12;  // number of characters in the word "submissions/"
+const USER_NO_LENGTH = 7;  // length of the user number identifier
+var iconStatus = 1;
+
+function is_elms_download(url) {
+	return url.includes("download") &&
+			(url.startsWith("https://umd.instructure.com") ||
+			 url.startsWith("https://myelms.umd.edu"));
+}
 
 chrome.browserAction.onClicked.addListener((tab) => {
 	if (iconStatus == 1){
@@ -14,10 +20,7 @@ chrome.browserAction.onClicked.addListener((tab) => {
 
 chrome.webRequest.onBeforeRequest.addListener((downloadItem) => {
 	if (iconStatus == 1) {
-		let origin = window.location.origin;
-		if (downloadItem.url.includes("download") &&
-				(origin === "https://umd.instructure.com" ||
-				 origin === "https://myelms.umd.edu")) {
+		if (is_elms_download(downloadItem.url)) {
 			if (downloadItem.url.includes("files")){
 				const downloadIndex = downloadItem.url.indexOf("download");
 				const newLink = downloadItem.url.substring(0, downloadIndex);
